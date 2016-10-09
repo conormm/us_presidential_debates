@@ -1,3 +1,6 @@
+# Author: Conor McDonald
+# Contact: @conormacd
+
 library(tidytext)
 library(tidyverse)
 library(stringr)
@@ -6,8 +9,6 @@ library(ggrepel)
 
 df <- read_csv("/Users/conormcdonald/Desktop/debate.csv")
 names(df) <- tolower(names(df))
-suppressWarnings()
-df %>% count(speaker, sort = TRUE)
 
 debate_words <- df %>% 
   unnest_tokens(word, text) %>% 
@@ -22,10 +23,6 @@ sent_line <- debate_words %>%
   inner_join(sent, by = "word") %>% 
   group_by(speaker, line) %>% 
   summarise(sentiment = mean(afinn_score))
-
-sent_line %>% 
-  filter(!speaker %in% c("Audience", "Holt")) %>% 
-  ggplot(aes(x=line, y=sentiment, colour = speaker)) + geom_line()
 
 neg_lines <- sent_line %>% 
   group_by(speaker) %>% 
@@ -52,7 +49,7 @@ sent_line %>%
 # eb = empirical bayes
 library(MASS)
 
-beta_dis <- fitdistr(neg_lines$prop_neg, dbeta, start = list(shape1 = 1, shape2 = 10))
+beta_dis <- MASS::fitdistr(neg_lines$prop_neg, dbeta, start = list(shape1 = 1, shape2 = 10))
 
 alpha0 <- beta_dis$estimate[1]
 beta0 <- beta_dis$estimate[2]
@@ -62,6 +59,8 @@ eb <- neg_lines %>%
   mutate(alpha1 = neg + alpha0, beta1 = lines - neg + beta0) %>% 
   mutate(low  = qbeta(.025, alpha1, beta1),
          high = qbeta(.975, alpha1, beta1))
+
+eb <- eb %>% filter(speaker != c("Holt"))
 
 eb_pdf <- eb %>% 
   inflate(x = seq(.10, 1., .0025)) %>%
