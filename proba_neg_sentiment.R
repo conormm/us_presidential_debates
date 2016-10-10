@@ -76,4 +76,4 @@ ggplot(eb_pdf, aes(x, density, color = speaker)) +
        title = "Probablistic estimate of being mean (negative sentiment)") +
   theme_bw() +
   theme(axis.title.x=element_text(margin=margin(t=15))) +
-  theme(plot.title = element_text(hjust=0))
+  theme(plot.title = element_text(hjust=0)) 

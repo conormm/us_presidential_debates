@@ -1,3 +1,6 @@
+# Author: Conor McDonald
+# Contact: @conormacd
+
 library(tidytext)
 library(tidyverse)
 library(stringr)
