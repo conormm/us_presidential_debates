@@ -1,4 +1,4 @@
-# us_presidential_debates
+# Negative sentiment in the 2016 Presidential Debates: A probabilistic analysis
 
 R code for my analyses of the the 2016 Clinton/Trump debates. 
 
